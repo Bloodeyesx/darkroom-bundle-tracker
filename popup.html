@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Darkroom Tracker</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+        /* --- THEME ENGINE --- */
+        :root {
+            /* DARK MODE (Default - Tactical Night) */
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #121212;
+            --accent: #ef4444;       /* Bright Red */
+            --text-main: #e5e5e5;
+            --text-dim: #666;
+            --border: #262626;
+            --input-bg: #000;
+            --scanline: rgba(0, 0, 0, 0.25);
+            --scrollbar: #333;
+            --toggle-track: #1a1a1a;
+        }
+
+        body.light-mode {
+            /* LIGHT MODE (Tactical Day - Office Paper) */
+            --bg-primary: #f5f0e0;   /* Cream/Parchment */
+            --bg-secondary: #e6dfc8; /* Darker Cream */
+            --accent: #d32f2f;       /* Red Ink */
+            --text-main: #1a1a1a;    /* Ink Black */
+            --text-dim: #777;
+            --border: #c7c1b0;
+            --input-bg: #ffffff;
+            --scanline: rgba(0, 0, 0, 0.04); /* Very faint grain */
+            --scrollbar: #ccc;
+            --toggle-track: #dcd6c5;
+        }
+
+        /* --- CORE LAYOUT --- */
+        body {
+            width: 400px;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            margin: 0;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+            position: relative;
+        }
+
+        /* CRT Scanline Overlay */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, var(--scanline) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        header {
+            background: var(--bg-secondary);
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        h1 { 
+            font-size: 13px; 
+            margin: 0; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+        }
+
+        .highlight { color: var(--accent); }
+
+        /* --- TACTICAL SLIDER SWITCH --- */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .switch-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Hide default checkbox */
+        .switch-container input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        /* The Track */
+        .slider {
+            position: relative;
+            display: inline-block;
+            width: 28px;
+            height: 12px;
+            background-color: var(--toggle-track);
+            border: 1px solid var(--border);
+            transition: .3s;
+        }
+
+        /* The Knob */
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 6px;
+            width: 6px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--text-dim);
+            transition: .3s;
+            border-radius: 0; /* Square / Brutalist */
+        }
+
+        /* Active State */
+        input:checked + .slider { border-color: var(--accent); }
+        input:checked + .slider:before {
+            transform: translateX(16px);
+            background-color: var(--accent);
+        }
+
+        /* --- SEARCH BAR --- */
+        .search-container {
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        input#search-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px;
+            font-family: 'JetBrains Mono', sans-serif;
+            font-size: 11px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input#search-input:focus { border-color: var(--accent); }
+        input#search-input::placeholder { color: var(--text-dim); }
+
+        /* --- BUNDLE LIST --- */
+        #bundle-list {
+            max-height: 420px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .bundle-item {
+            display: block;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .bundle-item:hover { border-color: var(--accent); }
+
+        /* --- ENHANCED STYLES (NEW) --- */
+        .img-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .new-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: var(--accent);
+            color: #000;
+            font-size: 8px;
+            font-weight: bold;
+            padding: 2px 6px;
+            box-shadow: 0 0 10px var(--accent);
+            z-index: 5;
+        }
+
+        .bundle-item.is-new {
+            border-color: var(--accent);
+            box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.1);
+            animation: pulse-border 3s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: rgba(239, 68, 68, 0.4); }
+            50% { border-color: rgba(239, 68, 68, 1); }
+            100% { border-color: rgba(239, 68, 68, 0.4); }
+        }
+        /* -------------------------- */
+
+        .bundle-img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            filter: grayscale(100%) brightness(0.8);
+            border-bottom: 1px solid var(--border);
+            transition: 0.3s;
+            display: block;
+        }
+
+        /* Restore color on hover */
+        .bundle-item:hover .bundle-img {
+            filter: grayscale(0%) brightness(1);
+        }
+
+        .bundle-info { padding: 10px; }
+        
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .bundle-label {
+            font-size: 8px;
+            color: var(--accent);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .bundle-date { font-size: 8px; color: var(--text-dim); }
+
+        .bundle-title {
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.3;
+            text-transform: uppercase;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 8px 15px;
+            font-size: 8px;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            background: var(--bg-primary);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Darkroom <span class="highlight">Tracker</span></h1>
+        
+        <div class="controls">
+            <label class="switch-container">
+                <span class="switch-label">MODE</span>
+                <input type="checkbox" id="theme-toggle-input">
+                <span class="slider"></span>
+            </label>
+            <span id="count" style="font-size: 10px; color: var(--text-dim);">INIT...</span>
+        </div>
+    </header>
+    
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="> FILTRER PAR NOM_">
+    </div>
+
+    <div id="bundle-list">
+        <div style="padding:40px; text-align:center; font-size:10px; color:var(--accent);">
+            ESTABLISHING UPLINK...
+        </div>
+    </div>
+
+    <footer>
+        <span>v2.0-ENHANCED</span>
+        <span id="timestamp">WAITING</span>
+    </footer>
+
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Darkroom Bundle Tracker",
+  "version": "2.0",
+  "description": "Surveillance active des offres Humble Software.",
+  "permissions": [
+    "alarms",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://bloodeyesx.github.io/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Voir les Bundles"
+  },
+  "icons": {
+    "128": "icon.png"
+  }
+}
