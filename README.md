@@ -1,39 +1,46 @@
 # 📸 Darkroom Bundle Tracker (Chrome Extension)
 
-> "Ne ratez plus jamais un bundle logiciel. Surveillance active en style Darkroom."
+> "Ne ratez plus jamais un bundle. Surveillance active avec esthétique Darkroom."
 
 ![Version](https://img.shields.io/badge/Version-2.0-ef4444?style=for-the-badge)
 ![Chrome](https://img.shields.io/badge/Chrome-Manifest_V3-black?style=for-the-badge&logo=google-chrome)
+![License](https://img.shields.io/github/license/Bloodeyesx/Bloodeyesx.github.io?style=for-the-badge&color=blue)
 
-## 🌑 À propos
+## 🌑 Aperçu
 
-Cette extension Chrome accompagne le projet [Humble Software Tracker](https://github.com/Bloodeyesx/Bloodeyesx.github.io). Elle permet de surveiller les nouvelles offres logicielles Humble Bundle directement depuis votre navigateur, sans ouvrir d'onglet.
+Cette extension accompagne le projet [Humble Software Tracker](https://bloodeyesx.github.io/). Elle permet de surveiller les offres logicielles en temps réel directement depuis votre navigateur.
 
-## ✨ Fonctionnalités (v2.0)
+| **Tactical Night (Dark Mode)** | **Office Paper (Light Mode)** |
+|:---:|:---:|
+| ![Dark Mode](screen-dark.png) | ![Light Mode](screen-light.png) |
+| *Pour les environnements à faible luminosité.* | *Pour une lisibilité maximale en journée.* |
 
-* **🕵️ Surveillance Active :** Un script d'arrière-plan vérifie les nouveautés toutes les 30 minutes.
-* **🔴 Notifications Badge :** Un compteur rouge apparaît sur l'icône quand des offres sont détectées.
-* **⚡ Détection "FRESH" :** Les bundles sortis il y a moins de 24h sont mis en avant avec une bordure pulsante.
-* **🔍 Filtre Instantané :** Barre de recherche intégrée pour trouver un logiciel spécifique.
-* **🎨 Moteur de Thèmes :** Basculez entre le mode *Tactical Night* (Sombre) et *Office Paper* (Clair).
+## ✨ Fonctionnalités Clés
 
-## 🔧 Installation Manuelle (Mode Développeur)
+* **🕵️ Surveillance Active :** Scan automatique en arrière-plan toutes les 30 minutes.
+* **🔴 Notifications :** Badge rouge sur l'icône dès qu'une offre est détectée.
+* **⚡ Détection "FRESH" :** Les bundles de moins de 24h pulsent en rouge.
+* **🎨 Dual Theme Engine :** Basculez instantanément entre le mode Sombre et Clair.
+* **🔍 Recherche Live :** Filtrez les bundles par nom instantanément.
 
-Cette extension n'est pas encore sur le Chrome Web Store. Voici comment l'installer :
+## 🔧 Installation
 
-1.  Téléchargez ce dépôt (Code > Download ZIP) et décompressez-le.
-2.  Ouvrez Chrome et allez sur `chrome://extensions`.
+Cette extension n'est pas sur le Chrome Web Store (pour l'instant). Voici comment l'installer manuellement :
+
+1.  **Téléchargez** le code (Bouton vert `<> Code` > `Download ZIP`) et décompressez-le.
+2.  Ouvrez Chrome et allez sur l'adresse `chrome://extensions`.
 3.  Activez le **Mode développeur** (en haut à droite).
-4.  Cliquez sur **Charger l'extension non empaquetée** (Load unpacked).
+4.  Cliquez sur **Charger l'extension non empaquetée**.
 5.  Sélectionnez le dossier décompressé.
 
 ## 🛠️ Stack Technique
 
-* **Manifest V3** (Standard de sécurité Chrome actuel)
-* **Service Worker** pour les tâches en arrière-plan
-* **Vanilla JS** (Pas de framework lourd)
-* **CSS3** pour les animations et le style "Darkroom"
+* **Core :** Manifest V3 & Service Workers
+* **UI :** HTML5 / CSS3 (Grid & Flexbox)
+* **Logic :** Vanilla JavaScript (Pas de frameworks)
+* **Source de données :** Flux XML généré par [Bloodeyesx.github.io](https://github.com/Bloodeyesx/Bloodeyesx.github.io)
 
-## 📝 Licence
-
-Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
+---
+<div align="center">
+  <i>Développé par Bloodeyesx • Licence MIT</i>
+</div>
